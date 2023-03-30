@@ -115,6 +115,7 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
             }
         }
 
+        event.getEntity().removeAllEffects();
         int cuantosItems = 0;
         for (ItemStack objeto : event.getEntity().getInventory().items) {
             if(objeto.getCount() != 0) {
@@ -122,21 +123,14 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
             }
         }
         if (cuantosItems <= 9) {
-            event.getEntity().removeAllEffects();
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2));
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2));
         }
-        else if (cuantosItems <= 18) {
-            event.getEntity().removeAllEffects();
-
-        }
         else if (cuantosItems <= 27) {
-            event.getEntity().removeAllEffects();
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1));
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1));
         }
-        else {
-            event.getEntity().removeAllEffects();
+        else if (cuantosItems <= 36){
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3));
             event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3));
         }
