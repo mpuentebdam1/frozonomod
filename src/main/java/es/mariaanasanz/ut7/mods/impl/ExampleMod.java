@@ -2,10 +2,13 @@ package es.mariaanasanz.ut7.mods.impl;
 
 import es.mariaanasanz.ut7.mods.base.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -49,6 +52,7 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
     public void onItemPickup(EntityItemPickupEvent event) {
         LOGGER.info("Item recogido");
         System.out.println("Item recogido");
+
     }
 
     @Override
@@ -109,6 +113,32 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
             if(event.getInput().left){
                 System.out.println("left"+event.getInput().left);
             }
+        }
+
+        int cuantosItems = 0;
+        for (ItemStack objeto : event.getEntity().getInventory().items) {
+            if(objeto.getCount() != 0) {
+                cuantosItems++;
+            }
+        }
+        if (cuantosItems <= 9) {
+            event.getEntity().removeAllEffects();
+            event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2));
+            event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2));
+        }
+        else if (cuantosItems <= 18) {
+            event.getEntity().removeAllEffects();
+
+        }
+        else if (cuantosItems <= 27) {
+            event.getEntity().removeAllEffects();
+            event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1));
+            event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1));
+        }
+        else {
+            event.getEntity().removeAllEffects();
+            event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3));
+            event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3));
         }
     }
 }
