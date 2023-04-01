@@ -26,9 +26,6 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
         IItemPickupEvent, ILivingDamageEvent, IUseItemEvent, IFishedEvent,
         IInteractEvent, IMovementEvent {
 
-    private int cuantosItems;
-    MobEffectInstance efecto1;
-    MobEffectInstance efecto2;
 
     public ExampleMod(){
         super();
@@ -57,6 +54,30 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
     public void onItemPickup(EntityItemPickupEvent event) {
         LOGGER.info("Item recogido");
         System.out.println("Item recogido");
+        Player player = event.getEntity();
+        int cuantosItems = 0;
+        player.removeAllEffects();
+        for (ItemStack objeto : player.getInventory().items) {
+            if(objeto.getCount() != 0) {
+                cuantosItems++;
+            }
+        }
+        if (cuantosItems <= 9) {
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2));
+        }
+        else if (cuantosItems<= 18) {
+            player.removeAllEffects();
+        }
+        else if (cuantosItems <= 27) {
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1));
+        }
+        else if (cuantosItems <= 36){
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3));
+        }
+        System.out.println("El jugador tiene " + cuantosItems + " items");
     }
 
     @Override
@@ -119,36 +140,6 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
             }
         }
 
-        Player player = event.getEntity();
 
-        player.removeEffect(efecto1.getEffect());
-        player.removeEffect(efecto2.getEffect());
-        for (ItemStack objeto : player.getInventory().items) {
-            if(objeto.getCount() != 0) {
-                cuantosItems++;
-            }
-        }
-        if (cuantosItems <= 9) {
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2));
-            player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2));
-            efecto1 = new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2);
-            efecto2 = new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2);
-        }
-        else if(cuantosItems <= 18) {
-            player.removeEffect(efecto1.getEffect());
-            player.removeEffect(efecto2.getEffect());
-        }
-        else if (cuantosItems <= 27) {
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1));
-            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1));
-            efecto1 = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1);
-            efecto2 = new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1);
-        }
-        else if (cuantosItems <= 36){
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3));
-            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3));
-            efecto1 = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3);
-            efecto2 = new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3);
-        }
     }
 }
