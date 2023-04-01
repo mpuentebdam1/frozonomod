@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -24,6 +25,10 @@ import net.minecraftforge.fml.common.Mod;
 public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStartEvent,
         IItemPickupEvent, ILivingDamageEvent, IUseItemEvent, IFishedEvent,
         IInteractEvent, IMovementEvent {
+
+    private int cuantosItems;
+    MobEffectInstance efecto1;
+    MobEffectInstance efecto2;
 
     public ExampleMod(){
         super();
@@ -52,7 +57,6 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
     public void onItemPickup(EntityItemPickupEvent event) {
         LOGGER.info("Item recogido");
         System.out.println("Item recogido");
-
     }
 
     @Override
@@ -115,24 +119,36 @@ public class ExampleMod extends DamMod implements IBlockBreakEvent, IServerStart
             }
         }
 
-        event.getEntity().removeAllEffects();
-        int cuantosItems = 0;
-        for (ItemStack objeto : event.getEntity().getInventory().items) {
+        Player player = event.getEntity();
+
+        player.removeEffect(efecto1.getEffect());
+        player.removeEffect(efecto2.getEffect());
+        for (ItemStack objeto : player.getInventory().items) {
             if(objeto.getCount() != 0) {
                 cuantosItems++;
             }
         }
         if (cuantosItems <= 9) {
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2));
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2));
+            efecto1 = new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 999999, 2);
+            efecto2 = new MobEffectInstance(MobEffects.DIG_SPEED, 999999, 2);
+        }
+        else if(cuantosItems <= 18) {
+            player.removeEffect(efecto1.getEffect());
+            player.removeEffect(efecto2.getEffect());
         }
         else if (cuantosItems <= 27) {
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1));
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1));
+            efecto1 = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 1);
+            efecto2 = new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 1);
         }
         else if (cuantosItems <= 36){
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3));
-            event.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3));
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3));
+            efecto1 = new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 999999, 3);
+            efecto2 = new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 999999, 3);
         }
     }
 }
